@@ -56,7 +56,7 @@ jobs:
 
       # Optionnel : login à un registre privé
       - name: Login to Private Registry
-        if: ${{ secrets.PRIVATE_REGISTRY_USER && secrets.PRIVATE_REGISTRY_PASSWORD }}
+        if: ${{ and(secrets.PRIVATE_REGISTRY_USER, secrets.PRIVATE_REGISTRY_PASSWORD) }}
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.PRIVATE_REGISTRY_USER }}
@@ -70,5 +70,7 @@ jobs:
         run: docker push mydockerhubuser/flaskapp:latest
 
       - name: Push Docker image to Private Registry
-        if: ${{ secrets.PRIVATE_REGISTRY_USER && secrets.PRIVATE_REGISTRY_PASSWORD }}
-        run: docker tag mydockerhubuser/flaskapp:latest myprivateregistry.com/flaskapp:latest && docker push myprivateregistry.com/flaskapp:latest
+        if: ${{ and(secrets.PRIVATE_REGISTRY_USER, secrets.PRIVATE_REGISTRY_PASSWORD) }}
+        run: |
+          docker tag mydockerhubuser/flaskapp:latest myprivateregistry.com/flaskapp:latest
+          docker push myprivateregistry.com/flaskapp:latest
